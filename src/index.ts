@@ -52,6 +52,7 @@ export function streakCounter(storage: Storage, date: Date): Streak {
           startDate: formattedDate(date),
           lastLoginDate: formattedDate(date),
         };
+        storage.setItem(KEY, JSON.stringify(updatedStreak));
 
         return updatedStreak;
       }
