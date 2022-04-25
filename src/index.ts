@@ -11,7 +11,7 @@ interface Streak {
 function shouldIncrementOrResetStreakCount(
   currentDate: Date,
   lastLoginDate: string,
-): 'increment' | undefined {
+): 'increment' | 'reset' {
   // We get 11/5/2021
   // so to get 5, we split on / and get the second item
   const difference =
@@ -22,7 +22,7 @@ function shouldIncrementOrResetStreakCount(
   }
   // Otherwise they logged in after a day, which would
   // break the streak
-  return undefined
+  return 'reset'
 }
 
 export function streakCounter(storage: Storage, date: Date): Streak {
@@ -32,6 +32,7 @@ export function streakCounter(storage: Storage, date: Date): Streak {
       const streak = JSON.parse(streakInLocalStorage)
       const state = shouldIncrementOrResetStreakCount(date, streak.lastLoginDate)
       const SHOULD_INCREMENT = state === 'increment'
+      const SHOULD_RESET = state === "reset";
 
       if (SHOULD_INCREMENT) {
         const updatedStreak = {
@@ -43,6 +44,16 @@ export function streakCounter(storage: Storage, date: Date): Streak {
         storage.setItem(KEY, JSON.stringify(updatedStreak));
 
         return updatedStreak
+      }
+
+      if (SHOULD_RESET) {
+        const updatedStreak: Streak = {
+          currentCount: 1,
+          startDate: formattedDate(date),
+          lastLoginDate: formattedDate(date),
+        };
+
+        return updatedStreak;
       }
       return streak
     } catch (error) {
