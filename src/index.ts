@@ -11,11 +11,15 @@ interface Streak {
 function shouldIncrementOrResetStreakCount(
   currentDate: Date,
   lastLoginDate: string,
-): 'increment' | 'reset' {
+): 'increment' | 'reset' | 'none' {
   // We get 11/5/2021
   // so to get 5, we split on / and get the second item
   const difference =
     currentDate.getDate() - parseInt(lastLoginDate.split('/')[1])
+  // Same-day login, do nothing
+  if (difference === 0) {
+    return "none";
+  }
   // This means they logged in the day after the currentDate
   if (difference === 1) {
     return 'increment'
